@@ -33,13 +33,17 @@ sudo install minikube-linux-amd64 /usr/local/bin/minikube
 echo "✅ Verifying Minikube..."
 minikube version
 
-# Start Minikube using Docker driver
-echo "🐳 Starting Minikube cluster..."
-minikube start --driver=docker
+# Start Minikube using Docker driver + Calico CNI
+echo "🐳 Starting Minikube cluster with Calico CNI..."
+minikube start --driver=docker --cni=calico
 
 # Verify cluster
 echo "🔍 Checking cluster status..."
 kubectl cluster-info
 kubectl get nodes
 
-echo "🎉 Minikube setup complete!"
+# Verify Calico pods
+echo "🧪 Verifying Calico installation..."
+kubectl get pods -n kube-system | grep calico || true
+
+echo "🎉 Minikube setup with Calico complete!"
