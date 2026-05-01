@@ -1,13 +1,3 @@
-#!/bin/bash
-
-# Update the local package metadata
-echo "Checking for updates..."
-sudo apt-get update
-
-# Upgrade only Terraform to the latest version available in the repo
-echo "Upgrading Terraform..."
-sudo apt-get install --only-upgrade terraform -y
-
-# Verify the new version
-echo "Current Version:"
-terraform --version
+wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt update && sudo apt install terraform
