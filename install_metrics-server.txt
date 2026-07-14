@@ -1,0 +1,43 @@
+# Step 1: Download the Official Manifest
+
+Instead of applying the manifest directly from GitHub, download it first so you can modify it:
+wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+Step 2: Modify the Deployment to Bypass TLS Validation
+Open the downloaded components.yaml file using your preferred text editor (like nano or vim):
+
+Search for the Deployment named metrics-server (you can look for kind: Deployment).
+Scroll down to the container args section under spec.template.spec.containers.
+Add the --kubelet-insecure-tls flag to the arguments list.
+It should look exactly like this:
+
+containers:
+      - args:
+        - --cert-dir=/tmp
+        - --secure-port=10250 # Note: Port might vary slightly by version, leave default
+        - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+        - --kubelet-use-node-status-port
+        - --metric-resolution=15s
+        - --kubelet-insecure-tls  # 👈 ADD THIS LINE
+        image: registry.k8s.io/metrics-server/metrics-server:v0.7.1
+
+Step 3: Apply the Manifest
+Now, deploy the modified file to your cluster:
+kubectl apply -f components.yaml
+
+Step 4: Verify the Installation
+Wait about 30–60 seconds for the Metrics Server pod to initialize and start scraping data from the nodes.
+
+1. Check Pod Status
+Ensure the pod is in a Running state:
+
+kubectl get pods -n kube-system -l k8s-app=metrics-server
+
+2. Test Resource Metrics
+Once the pod is running, test that it can successfully pull metrics using the kubectl top commands:
+
+# Check node resource usage
+kubectl top nodes
+
+# Check pod resource usage across all namespaces
+kubectl top pods --all-namespaces
