@@ -26,3 +26,9 @@ kubectl version --client
 ```
 eksctl create cluster -f cluster.yaml
 ```
+
+**# Update ./kube/config file**
+
+```
+aws eks update-kubeconfig --name observability
+```
