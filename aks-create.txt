@@ -10,3 +10,5 @@ az aks create \
   --enable-oidc-issuer \
   --enable-workload-identity \
   --generate-ssh-keys
+
+az aks get-credentials --resource-group keyvault-demo --name keyvault-demo-cluster
