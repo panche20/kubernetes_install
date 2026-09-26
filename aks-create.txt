@@ -1,0 +1,12 @@
+az provider register --namespace Microsoft.ContainerService
+az provider show -n Microsoft.ContainerService --query "registrationState" -o tsv
+
+az aks create \
+  --name keyvault-demo-cluster \
+  -g keyvault-demo \
+  --node-count 1 \
+  --node-vm-size Standard_D2s_v7 \
+  --enable-addons azure-keyvault-secrets-provider \
+  --enable-oidc-issuer \
+  --enable-workload-identity \
+  --generate-ssh-keys
